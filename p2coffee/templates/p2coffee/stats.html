@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load staticfiles i18n %}
+{% block content %}
+    <h2>{% trans "Event power meter plot" %}</h2>
+    <div id="container" style="min-width: 310px; height: 400px; max-width: 800px;"></div>
+
+    <h2>{% trans "Power state (last)" %}</h2>
+    {{ last_state.value }}
+
+    <script type="text/javascript" src="{% static 'scripts/app.js' %}"></script>
+{% endblock %}
