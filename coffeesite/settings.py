@@ -33,6 +33,7 @@ INSTALLED_APPS = [
 
     'django_extensions',
     'huey.contrib.djhuey',
+    'rest_framework',
 ]
 
 INSTALLED_APPS += [

@@ -1,8 +1,18 @@
 {% extends "base.html" %}
 {% load staticfiles i18n %}
 {% block content %}
+    <script>
+    {% if urls %}
+        var URLS = { {% for name,url in urls.items %}
+            '{{ name }}': '{{ url }}',
+        {% endfor %} };
+    {% endif %}
+    </script>
     <h2>{% trans "Event power meter plot" %}</h2>
     <div id="container" style="min-width: 310px; height: 400px; max-width: 800px;"></div>
+{#    {% for e in events %}#}
+{#        {{ e }}#}
+{#    {% endfor %}#}
 
     <h2>{% trans "Power state (last)" %}</h2>
     {{ last_state.value }}

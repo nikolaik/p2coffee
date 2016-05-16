@@ -1,2 +1,2 @@
 # TODO
-- Rename LogEvent to sensorevent
+- Rename LogEvent to SensorEvent

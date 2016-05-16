@@ -1,11 +1,14 @@
 from itertools import groupby
 from pprint import pprint
 
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.views.generic import View, TemplateView
 
 from p2coffee.forms import LogEventForm
 from p2coffee.models import LogEvent
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 
 class CreateLogEventView(View):
@@ -21,14 +24,19 @@ class CreateLogEventView(View):
 class StatsView(TemplateView):
     template_name = 'p2coffee/stats.html'
 
-    NAME_SWITCH = 'power-switch'  # FIXME: setting
+    # FIXME settings
+    NAME_SWITCH = 'power-switch'
+    NAME_METER_HAS_CHANGED = 'power-meter-has-changed'
+    NAME_METER = 'power-meter'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         context.update({
-            'events': self._get_events(),
-            'last_state': self._get_last_power_state()
+            'last_state': self._get_last_power_state(),
+            'urls': {
+                'stats-events': reverse('stats-events')
+            }
         })
 
         return context
@@ -36,22 +44,26 @@ class StatsView(TemplateView):
     def _get_last_power_state(self):
         return LogEvent.objects.filter(name=self.NAME_SWITCH).order_by('created').last()
 
+
+class StatsEvents(APIView):
+    """List events grouped by name, in highcharts friendly format."""
+    def get(self, request, format=None):
+        return Response(self._get_events())
+
     def _get_events(self):
-        events = LogEvent.objects.exclude(name=self.NAME_SWITCH).values('name', 'value', 'created')
-        events_formatted = []
-        # for name, value, created in events:
-        #     events_formatted.append({
-        #
-        #     })
+        events = LogEvent.objects.exclude(name=StatsView.NAME_SWITCH).values('name', 'value', 'created')
 
+        # Group the data
         keyfunc = lambda x: x['name']
-        groups = []
-        uniquekeys = []
+        event_groups = []
         data = sorted(events, key=keyfunc)
-        for k, g in groupby(data, keyfunc):
-            groups.append(list(g))  # Store group iterator as a list
-            uniquekeys.append(k)
-        pprint(groups)
-        pprint(uniquekeys)
+        for key, group in groupby(data, keyfunc):
+            event_groups.append({
+                'name': key,
+                'data': self._events_to_highcharts_format(group)
+            })
 
-        return groups
+        return event_groups
+
+    def _events_to_highcharts_format(self, events):
+        return list(map(lambda e: [e['created'].timestamp() * 1000, float(e['value'])], events))

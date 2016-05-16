@@ -1,5 +1,6 @@
 Django==1.9.6
 django-extensions==1.6.7
+djangorestframework==3.3.3
 gevent==1.1.1
 greenlet==0.4.9
 gunicorn==19.5.0
