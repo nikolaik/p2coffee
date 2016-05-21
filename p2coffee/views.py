@@ -81,4 +81,5 @@ class SlackOutgoingView(CsrfExemptMixin, View):
 
         user_name = form.cleaned_data['user_name']
 
+        # TODO: check form.cleaned_data['text'] and reply with brewing status
         return JsonResponse({'text': _('Hi {} :-)').format(user_name)})

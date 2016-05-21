@@ -7,11 +7,12 @@ from p2coffee.models import SensorEvent
 
 
 @db_task()
-def on_new_meter(logevent):
-    print(logevent)
+def on_new_meter(sensor_event):
+    print(sensor_event)
     timeinterval = timedelta(minutes=5)
     if SensorEvent.objects.filter(created__gt=timezone.now() - timeinterval):
         pass
+        # TODO do something
 
 
 @periodic_task(crontab(minute='*/5'))

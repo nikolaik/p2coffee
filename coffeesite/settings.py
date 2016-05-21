@@ -114,6 +114,8 @@ rconn = urlparse(os.environ.get('REDISTOGO_URL', 'redis://localhost:6379'))
 rconn = {'host': rconn.hostname, 'port': rconn.port, 'password': rconn.password}
 HUEY = RedisHuey('coffeesite', result_store=False, **rconn)
 
+SLACK_WEBHOOK_URL = os.getenv('SLACK_WEBHOOK_URL')
+
 try:
     from .local_settings import *
 except ImportError:
