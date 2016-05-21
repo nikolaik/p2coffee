@@ -1,22 +1,25 @@
-from itertools import groupby
-from pprint import pprint
-
+from braces.views import CsrfExemptMixin
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.utils.translation import ugettext as _
 from django.views.generic import View, TemplateView
-
-from p2coffee.forms import LogEventForm
-from p2coffee.models import LogEvent
+from itertools import groupby
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from p2coffee.forms import SensorEventForm, SlackOutgoingForm
+from p2coffee.models import SensorEvent
 
-class CreateLogEventView(View):
+
+class CreateSensorEventView(View):
     # /event/log/?name=power-meter-has-changed&id=ZWayVDev_zway_2-0-49-4&value=4.6
     def get(self, request, *args, **kwargs):
-        form = LogEventForm(request.GET)
-        if form.is_valid():
-            form.save()
+        form = SensorEventForm(request.GET)
+
+        if not form.is_valid():
+            return HttpResponseBadRequest('Curse you coffeepot!')
+
+        form.save()
 
         return HttpResponse('Thank you coffepot!')
 
@@ -42,7 +45,7 @@ class StatsView(TemplateView):
         return context
 
     def _get_last_power_state(self):
-        return LogEvent.objects.filter(name=self.NAME_SWITCH).order_by('created').last()
+        return SensorEvent.objects.filter(name=self.NAME_SWITCH).order_by('created').last()
 
 
 class StatsEvents(APIView):
@@ -51,7 +54,7 @@ class StatsEvents(APIView):
         return Response(self._get_events())
 
     def _get_events(self):
-        events = LogEvent.objects.exclude(name=StatsView.NAME_SWITCH).values('name', 'value', 'created')
+        events = SensorEvent.objects.exclude(name=StatsView.NAME_SWITCH).values('name', 'value', 'created')
 
         # Group the data
         keyfunc = lambda x: x['name']
@@ -67,3 +70,15 @@ class StatsEvents(APIView):
 
     def _events_to_highcharts_format(self, events):
         return list(map(lambda e: [e['created'].timestamp() * 1000, float(e['value'])], events))
+
+
+class SlackOutgoingView(CsrfExemptMixin, View):
+    def post(self, request):
+        form = SlackOutgoingForm(request.POST)
+
+        if not form.is_valid():
+            return JsonResponse({'text': 'Invalid form'}, status=400)
+
+        user_name = form.cleaned_data['user_name']
+
+        return JsonResponse({'text': _('Hi {} :-)').format(user_name)})

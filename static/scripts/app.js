@@ -1,5 +1,5 @@
 $(function () {
-    /* TODO */
+    /* TODO: poll per second */
     $.getJSON(URLS['stats-events'], function(eventSeries) {
         console.log(eventSeries);
         $('#container').highcharts({

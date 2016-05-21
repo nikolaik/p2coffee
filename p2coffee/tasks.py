@@ -3,14 +3,14 @@ from datetime import timedelta
 from django.utils import timezone
 from huey import crontab
 from huey.contrib.djhuey import task, periodic_task, db_task
-from p2coffee.models import LogEvent
+from p2coffee.models import SensorEvent
 
 
 @db_task()
 def on_new_meter(logevent):
     print(logevent)
     timeinterval = timedelta(minutes=5)
-    if LogEvent.objects.filter(created__gt=timezone.now() - timeinterval):
+    if SensorEvent.objects.filter(created__gt=timezone.now() - timeinterval):
         pass
 
 
