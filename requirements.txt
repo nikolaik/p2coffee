@@ -7,3 +7,4 @@ greenlet==0.4.9
 gunicorn==19.5.0
 huey==1.1.2
 redis==2.10.5
+whitenoise==3.1
