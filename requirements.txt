@@ -1,11 +1,12 @@
-dj-database-url==0.4.1
 Django==1.9.6
 django-braces==1.8.1
 django-extensions==1.6.7
 djangorestframework==3.3.3
+dj-database-url==0.4.1
 gevent==1.1.1
 greenlet==0.4.9
 gunicorn==19.5.0
 huey==1.1.2
+psycopg2==2.6.1
 redis==2.10.5
 whitenoise==3.1
