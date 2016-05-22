@@ -1,10 +1,8 @@
 # TODO
-- Trigger coffee check task on new sensor event
-- run checks:
-    - based power meter in correct Watt range:
-       - changed from not brewing to brewing?
-         - notify slack (url, channel, bot name) with eta
-       - from brewing to heating?
-         - notify slack of done (and brewtime)
-    
-- view to check if pot is on (slack webview)
+- Fix threshold numbers
+- Support dual moccamaster (more thresholds)
+- Add brewtime (actual) to slack notification
+- Add README
+- Blink light bulb on finish
+- Translate to norwegian
+- More stats

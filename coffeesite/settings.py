@@ -114,7 +114,11 @@ rconn = urlparse(os.environ.get('REDISTOGO_URL', 'redis://localhost:6379'))
 rconn = {'host': rconn.hostname, 'port': rconn.port, 'password': rconn.password}
 HUEY = RedisHuey('coffeesite', result_store=False, **rconn)
 
+# Slack
 SLACK_WEBHOOK_URL = os.getenv('SLACK_WEBHOOK_URL')
+
+# Brewing settings
+BREWTIME_AVG_MINUTES = int(os.getenv('BREWTIME_AVG_MINUTES', '4'))
 
 try:
     from .local_settings import *

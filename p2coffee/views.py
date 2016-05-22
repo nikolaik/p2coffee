@@ -4,11 +4,13 @@ from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.utils.translation import ugettext as _
 from django.views.generic import View, TemplateView
 from itertools import groupby
+
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from p2coffee.forms import SensorEventForm, SlackOutgoingForm
-from p2coffee.models import SensorEvent
+from p2coffee.models import SensorEvent, CoffeePotEvent
+from p2coffee.tasks import on_new_meter
 
 
 class CreateSensorEventView(View):
@@ -19,7 +21,9 @@ class CreateSensorEventView(View):
         if not form.is_valid():
             return HttpResponseBadRequest('Curse you coffeepot!')
 
-        form.save()
+        event = form.save()
+
+        on_new_meter(event)
 
         return HttpResponse('Thank you coffepot!')
 
@@ -82,4 +86,9 @@ class SlackOutgoingView(CsrfExemptMixin, View):
         user_name = form.cleaned_data['user_name']
 
         # TODO: check form.cleaned_data['text'] and reply with brewing status
-        return JsonResponse({'text': _('Hi {} :-)').format(user_name)})
+        last_event = CoffeePotEvent.objects.all().order_by('-created').last()
+        brewing_status = 'I\'m a coffee pot!'
+        if last_event:
+            brewing_status = last_event.as_slack_text()
+
+        return JsonResponse({'text': _('Hi {}, {}').format(user_name, brewing_status)})
