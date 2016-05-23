@@ -1,4 +1,5 @@
 from huey.contrib.djhuey import db_task
+
 from p2coffee import slack
 from p2coffee.models import SensorEvent, CoffeePotEvent
 
