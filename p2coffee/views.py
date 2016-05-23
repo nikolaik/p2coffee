@@ -31,11 +31,6 @@ class CreateSensorEventView(View):
 class StatsView(TemplateView):
     template_name = 'p2coffee/stats.html'
 
-    # FIXME settings
-    NAME_SWITCH = 'power-switch'
-    NAME_METER_HAS_CHANGED = 'power-meter-has-changed'
-    NAME_METER = 'power-meter'
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -49,7 +44,7 @@ class StatsView(TemplateView):
         return context
 
     def _get_last_power_state(self):
-        return SensorEvent.objects.filter(name=self.NAME_SWITCH).order_by('created').last()
+        return SensorEvent.objects.filter(name=SensorEvent.NAME_SWITCH).order_by('created').last()
 
 
 class StatsEvents(APIView):
@@ -58,7 +53,7 @@ class StatsEvents(APIView):
         return Response(self._get_events())
 
     def _get_events(self):
-        events = SensorEvent.objects.exclude(name=StatsView.NAME_SWITCH).values('name', 'value', 'created')
+        events = SensorEvent.objects.filter(name=SensorEvent.NAME_METER_HAS_CHANGED).values('name', 'value', 'created')
 
         # Group the data
         keyfunc = lambda x: x['name']
@@ -85,8 +80,8 @@ class SlackOutgoingView(CsrfExemptMixin, View):
 
         user_name = form.cleaned_data['user_name']
 
-        # TODO: check form.cleaned_data['text'] and reply with brewing status
-        last_event = CoffeePotEvent.objects.all().order_by('-created').last()
+        # TODO: check form.cleaned_data['text']
+        last_event = CoffeePotEvent.objects.order_by('created').last()
         brewing_status = 'I\'m a coffee pot!'
         if last_event:
             brewing_status = last_event.as_slack_text()

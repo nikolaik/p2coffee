@@ -9,8 +9,18 @@ import uuid
 
 
 class SensorEvent(TimeStampedModel):
+    NAME_SWITCH = 'power-switch'
+    NAME_METER_HAS_CHANGED = 'power-meter-has-changed'
+    NAME_METER = 'power-meter'
+
+    NAME_CHOICES = [
+        (NAME_SWITCH, _('Power switched')),
+        (NAME_METER, _('Power metered')),
+        (NAME_METER_HAS_CHANGED, _('Power meter changed'))
+    ]
+
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    name = models.CharField(max_length=254)
+    name = models.CharField(max_length=254, choices=NAME_CHOICES)
     value = models.CharField(max_length=254)
     id = models.CharField(max_length=254)
 
