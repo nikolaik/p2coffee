@@ -1,8 +1,15 @@
-# TODO
+## Install
+    pyvenv venv
+    . venv/bin/activate
+    pip install -r requirements.txt
+    python manage.py migrate
+
+## Development tasks
+    # Run worker
+    python manage.py run_huey -w 2
+
+## TODO
 - Fix threshold numbers
 - Support dual moccamaster (more thresholds)
-- Add brewtime (actual) to slack notification
-- Add README
 - Blink light bulb on finish
-- Translate to norwegian
 - More stats

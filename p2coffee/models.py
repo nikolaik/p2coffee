@@ -3,6 +3,7 @@ from datetime import timedelta
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.db import models
+from django.utils.timesince import timesince
 from django.utils.translation import ugettext_lazy as _
 from django_extensions.db.models import TimeStampedModel
 import uuid
@@ -27,6 +28,10 @@ class SensorEvent(TimeStampedModel):
     def __str__(self):
         return str(self.uuid)
 
+    class Meta:
+        verbose_name = _('Sensor event')
+        verbose_name_plural = _('Sensor events')
+
 
 class CoffeePotEvent(TimeStampedModel):
     BREWING_STARTED = 'brew_started'
@@ -39,16 +44,28 @@ class CoffeePotEvent(TimeStampedModel):
     type = models.CharField(max_length=254, choices=EVENT_TYPES)
 
     def as_slack_text(self):
-        return '{} {}{}'.format(self.__str__(), naturaltime(self.created), self._get_eta())
+        return '{} {}{}'.format(self.__str__(), naturaltime(self.created), self._get_duration())
 
-    def _get_eta(self):
-        eta = ''
+    def _get_duration(self):
+        duration = ''
 
         if self.type == self.BREWING_STARTED:
             brew_time = timedelta(minutes=settings.BREWTIME_AVG_MINUTES)
-            eta = _(' and should be done {}'.format(naturaltime(self.created + brew_time)))
+            duration = _(' and should be done {}'.format(naturaltime(self.created + brew_time)))
 
-        return eta
+        elif self.type == self.BREWING_FINISHED:
+            events_started = CoffeePotEvent.objects.filter(type=self.BREWING_STARTED)
+            last_started_event = events_started.exclude(uuid=self.uuid).order_by('created').last()
+
+            if last_started_event:
+                actual_brew_time = timesince(last_started_event.created, self.created)
+                duration = _(' and took {}'.format(actual_brew_time))
+
+        return duration
 
     def __str__(self):
         return str(dict(self.EVENT_TYPES).get(self.type))
+
+    class Meta:
+        verbose_name = _('Coffee pot event')
+        verbose_name_plural = _('Coffee pot events')
