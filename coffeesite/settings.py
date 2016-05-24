@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
 
     'django_extensions',
     'huey.contrib.djhuey',
@@ -98,10 +99,14 @@ LANGUAGES = [
     ('nb', _('Norwegian')),
 ]
 LANGUAGE_CODE = os.getenv('LANGUAGE_CODE', 'en')
-TIME_ZONE = 'UTC'
+TIME_ZONE = os.getenv('TIME_ZONE', 'UTC')
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
 
 
 # Static files (CSS, JavaScript, Images)

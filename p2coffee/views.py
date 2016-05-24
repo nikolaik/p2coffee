@@ -49,7 +49,7 @@ class StatsView(TemplateView):
         return context
 
     def _get_last_power_state(self):
-        return SensorEvent.objects.filter(name=SensorEvent.NAME_SWITCH).order_by('created').last()
+        return SensorEvent.objects.filter(name=SensorEvent.NAME_SWITCH).last()
 
 
 class StatsEvents(APIView):
@@ -86,7 +86,7 @@ class SlackOutgoingView(CsrfExemptMixin, View):
         user_name = form.cleaned_data['user_name']
 
         # TODO: check form.cleaned_data['text']
-        last_event = CoffeePotEvent.objects.order_by('created').last()
+        last_event = CoffeePotEvent.objects.last()
         brewing_status = _('I\'m a coffee pot!')
         if last_event:
             brewing_status = last_event.as_slack_text()

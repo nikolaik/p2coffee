@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-24 10:11+0000\n"
+"POT-Creation-Date: 2016-05-24 15:27+0200\n"
 "PO-Revision-Date: 2016-05-24 12:13+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -18,67 +18,67 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 1.8.7.1\n"
 
-#: apps.py:8
+#: p2coffee/apps.py:8
 msgid "Power to coffee"
 msgstr "Strøm til kaffe"
 
-#: models.py:18
+#: p2coffee/models.py:18
 msgid "Power switched"
 msgstr "Strømbryter endret"
 
-#: models.py:19
+#: p2coffee/models.py:19
 msgid "Power metered"
 msgstr "Strøm avlest"
 
-#: models.py:20
+#: p2coffee/models.py:20
 msgid "Power meter changed"
 msgstr "Strømavlesning endret"
 
-#: models.py:32
+#: p2coffee/models.py:32
 msgid "Sensor event"
 msgstr "Sensorhendelse"
 
-#: models.py:33
+#: p2coffee/models.py:33
 msgid "Sensor events"
 msgstr "Sensorhendelser"
 
-#: models.py:41
+#: p2coffee/models.py:42
 msgid "I started brewing"
 msgstr "Jeg startet å brygge"
 
-#: models.py:42
+#: p2coffee/models.py:43
 msgid "I'm done brewing"
 msgstr "Jeg ble ferdig å brygge"
 
-#: models.py:55
+#: p2coffee/models.py:57
 msgid " and should be done {}"
 msgstr " og burde være ferdig {}"
 
-#: models.py:63
+#: p2coffee/models.py:65
 msgid ", took only {} :-)"
 msgstr ", tok bare {} :-)"
 
-#: models.py:71
+#: p2coffee/models.py:73
 msgid "Coffee pot event"
 msgstr "Kaffekannehendelse"
 
-#: models.py:72
+#: p2coffee/models.py:74
 msgid "Coffee pot events"
 msgstr "Kaffekannehendelser"
 
-#: templates/p2coffee/stats.html:11
+#: p2coffee/templates/p2coffee/stats.html:11
 msgid "Event power meter plot"
 msgstr "Plot av strømavlesinger"
 
-#: templates/p2coffee/stats.html:17
+#: p2coffee/templates/p2coffee/stats.html:17
 msgid "Power state (last)"
 msgstr "Tilstand strømbryter (siste)"
 
-#: views.py:90
+#: p2coffee/views.py:90
 msgid "I'm a coffee pot!"
 msgstr "Jeg er en kaffetrakter!"
 
-#: views.py:94
+#: p2coffee/views.py:94
 msgid "Hi {}, {}"
 msgstr "Hei {}, {}"
 

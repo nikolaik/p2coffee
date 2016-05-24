@@ -7,18 +7,20 @@ from p2coffee.models import SensorEvent, CoffeePotEvent
 def on_new_meter(sensor_event):
     assert isinstance(sensor_event, SensorEvent)
     # FIXME values are guesstimates
-    start_threshold = 1500
-    finish_threshold = 100
+    # FIXME: When two meter events arrive at the same time, multiple coffeepot events are likely
+    threshold_started = 1500
+    threshold_finished = 100
     cpe = None
+    current_value = float(sensor_event.value)
 
-    # Get previous event
+    # Get previous event value
     change_events = SensorEvent.objects.filter(name=SensorEvent.NAME_METER_HAS_CHANGED)
-    previous_event = change_events.exclude(uuid=sensor_event.uuid).order_by('created').last()
+    previous_value = float(change_events.exclude(uuid=sensor_event.uuid).last().value)
 
     # Compare current with previous and check if thresholds have been crossed
-    if float(sensor_event.value) >= start_threshold > float(previous_event.value):
+    if current_value >= threshold_started > previous_value:
         cpe = CoffeePotEvent.objects.create(type=CoffeePotEvent.BREWING_STARTED)
-    elif float(sensor_event.value) <= finish_threshold < float(previous_event.value):
+    elif current_value <= threshold_finished < previous_value:
         cpe = CoffeePotEvent.objects.create(type=CoffeePotEvent.BREWING_FINISHED)
 
     if cpe is not None:

@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load staticfiles i18n %}
+{% load staticfiles i18n humanize %}
 {% block content %}
     <script>
     {% if urls %}
@@ -15,7 +15,7 @@
 {#    {% endfor %}#}
 
     <h2>{% trans "Power state (last)" %}</h2>
-    {{ last_state.value }}
+    {% trans last_state.value %} (for {{ last_state.created|naturaltime }})
 
     <script type="text/javascript" src="{% static 'scripts/app.js' %}"></script>
 {% endblock %}
