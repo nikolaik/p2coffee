@@ -31,6 +31,7 @@ class SensorEvent(TimeStampedModel):
     class Meta:
         verbose_name = _('Sensor event')
         verbose_name_plural = _('Sensor events')
+        index_together = ['created', 'modified']
 
 
 class CoffeePotEvent(TimeStampedModel):
@@ -69,3 +70,4 @@ class CoffeePotEvent(TimeStampedModel):
     class Meta:
         verbose_name = _('Coffee pot event')
         verbose_name_plural = _('Coffee pot events')
+        index_together = ['created', 'modified']

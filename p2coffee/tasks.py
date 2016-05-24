@@ -4,7 +4,6 @@ from p2coffee import slack
 from p2coffee.models import SensorEvent, CoffeePotEvent
 
 
-@db_task()
 def on_new_meter(sensor_event):
     assert isinstance(sensor_event, SensorEvent)
     # FIXME values are guesstimates
@@ -22,6 +21,11 @@ def on_new_meter(sensor_event):
     elif float(sensor_event.value) <= finish_threshold < float(previous_event.value):
         cpe = CoffeePotEvent.objects.create(type=CoffeePotEvent.BREWING_FINISHED)
 
-    # Notify on Slack
     if cpe is not None:
-        slack.send_msg(cpe.as_slack_text())
+        send_to_slack(cpe)
+
+
+@db_task()
+def send_to_slack(cpe):
+    # Notify on Slack
+    slack.send_msg(cpe.as_slack_text())
