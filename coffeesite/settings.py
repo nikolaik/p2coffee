@@ -1,9 +1,9 @@
 """ https://docs.djangoproject.com/en/1.9/ref/settings/ """
-
-import dj_database_url
+from django.utils.translation import ugettext_lazy as _
 from huey import RedisHuey
-import os
 from urllib.parse import urlparse
+import dj_database_url
+import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -93,7 +93,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
-LANGUAGE_CODE = os.getenv('LANGUAGE_CODE', 'en-us')
+LANGUAGES = [
+    ('en', _('English')),
+    ('nb', _('Norwegian')),
+]
+LANGUAGE_CODE = os.getenv('LANGUAGE_CODE', 'en')
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
