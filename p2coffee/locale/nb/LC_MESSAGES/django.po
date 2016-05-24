@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-23 21:24+0000\n"
-"PO-Revision-Date: 2016-05-23 23:24+0200\n"
+"POT-Creation-Date: 2016-05-24 10:11+0000\n"
+"PO-Revision-Date: 2016-05-24 12:13+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: nb\n"
@@ -42,27 +42,27 @@ msgstr "Sensorhendelse"
 msgid "Sensor events"
 msgstr "Sensorhendelser"
 
-#: models.py:40
-msgid "brewing started"
-msgstr "brygging startet"
-
 #: models.py:41
-msgid "brewing finished"
-msgstr "brygging ferdig"
+msgid "I started brewing"
+msgstr "Jeg startet å brygge"
 
-#: models.py:54
+#: models.py:42
+msgid "I'm done brewing"
+msgstr "Jeg ble ferdig å brygge"
+
+#: models.py:55
 msgid " and should be done {}"
 msgstr " og burde være ferdig {}"
 
-#: models.py:62
-msgid " and took {}"
-msgstr " og tok {}"
+#: models.py:63
+msgid ", took only {} :-)"
+msgstr ", tok bare {} :-)"
 
-#: models.py:70
+#: models.py:71
 msgid "Coffee pot event"
 msgstr "Kaffekannehendelse"
 
-#: models.py:71
+#: models.py:72
 msgid "Coffee pot events"
 msgstr "Kaffekannehendelser"
 
@@ -74,6 +74,19 @@ msgstr "Plot av strømavlesinger"
 msgid "Power state (last)"
 msgstr "Tilstand strømbryter (siste)"
 
+#: views.py:90
+msgid "I'm a coffee pot!"
+msgstr "Jeg er en kaffetrakter!"
+
 #: views.py:94
 msgid "Hi {}, {}"
 msgstr "Hei {}, {}"
+
+#~ msgid "brewing started"
+#~ msgstr "brygging startet"
+
+#~ msgid "brewing finished"
+#~ msgstr "brygging ferdig"
+
+#~ msgid " and took {}"
+#~ msgstr " og tok {}"

@@ -87,7 +87,7 @@ class SlackOutgoingView(CsrfExemptMixin, View):
 
         # TODO: check form.cleaned_data['text']
         last_event = CoffeePotEvent.objects.order_by('created').last()
-        brewing_status = 'I\'m a coffee pot!'
+        brewing_status = _('I\'m a coffee pot!')
         if last_event:
             brewing_status = last_event.as_slack_text()
 

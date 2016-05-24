@@ -38,8 +38,8 @@ class CoffeePotEvent(TimeStampedModel):
     BREWING_STARTED = 'brew_started'
     BREWING_FINISHED = 'brew_finished'
     EVENT_TYPES = [
-        (BREWING_STARTED, _('brewing started')),
-        (BREWING_FINISHED, _('brewing finished'))
+        (BREWING_STARTED, _('I started brewing')),
+        (BREWING_FINISHED, _('I\'m done brewing'))
     ]
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4)
     type = models.CharField(max_length=254, choices=EVENT_TYPES)
@@ -52,7 +52,7 @@ class CoffeePotEvent(TimeStampedModel):
 
         if self.type == self.BREWING_STARTED:
             brew_time = timedelta(minutes=settings.BREWTIME_AVG_MINUTES)
-            duration = _(' and should be done {}'.format(naturaltime(self.created + brew_time)))
+            duration = _(' and should be done {}').format(naturaltime(self.created + brew_time))
 
         elif self.type == self.BREWING_FINISHED:
             events_started = CoffeePotEvent.objects.filter(type=self.BREWING_STARTED)
@@ -60,7 +60,7 @@ class CoffeePotEvent(TimeStampedModel):
 
             if last_started_event:
                 actual_brew_time = timesince(last_started_event.created, self.created)
-                duration = _(' and took {}'.format(actual_brew_time))
+                duration = _(', took only {} :-)').format(actual_brew_time)
 
         return duration
 
