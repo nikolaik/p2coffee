@@ -8,6 +8,7 @@ class CoffeePotEventAdmin(admin.ModelAdmin):
     list_display = ['type', 'created_precise']
     list_filter = ['type']
     readonly_fields = ['uuid', 'created']
+    ordering = ['-created']
 
     def created_precise(self, obj):
         return obj.created.strftime("%Y-%m-%d %H:%M:%S")
@@ -21,6 +22,7 @@ class SensorEventAdmin(admin.ModelAdmin):
     list_filter = ['name', 'id']
     readonly_fields = ['uuid', 'created']
     fields = ['name', 'id', 'value', 'uuid', 'created']
+    ordering = ['-created']
 
     def created_precise(self, obj):
         return obj.created.strftime("%Y-%m-%d %H:%M:%S")
