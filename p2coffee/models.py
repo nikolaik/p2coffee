@@ -32,7 +32,7 @@ class SensorEvent(TimeStampedModel):
         verbose_name = _('Sensor event')
         verbose_name_plural = _('Sensor events')
         index_together = ['created', 'modified']
-        ordering = ['-created']
+        ordering = ['created']
 
 
 class CoffeePotEvent(TimeStampedModel):
@@ -74,4 +74,4 @@ class CoffeePotEvent(TimeStampedModel):
         verbose_name = _('Coffee pot event')
         verbose_name_plural = _('Coffee pot events')
         index_together = ['created', 'modified']
-        ordering = ['-created']
+        ordering = ['created']
