@@ -8,14 +8,25 @@
         {% endfor %} };
     {% endif %}
     </script>
+    <h1>🔌 {% trans "Power" %}</h1>
     <h2>{% trans "Event power meter plot" %}</h2>
     <div id="container" style="min-width: 310px; height: 400px; max-width: 800px;"></div>
-{#    {% for e in events %}#}
-{#        {{ e }}#}
-{#    {% endfor %}#}
 
     <h2>{% trans "Power state (last)" %}</h2>
-    {% trans last_state.value %} (for {{ last_state.created|naturaltime }})
+    {% if last_state %}
+        {% trans last_state.value %} (for {{ last_state.created|naturaltime }})
+    {% else %}
+        {% trans "Unknown" %}
+    {% endif %}
+
+    <h1>☕ {% trans "Coffee" %}</h1>
+
+    <h2>{% trans "Last brew" %}</h2>
+    {% if last_brew %}
+        {{ last_brew.as_text }}
+    {% else %}
+        {% trans "Unknown" %}
+    {% endif %}
 
     <script type="text/javascript" src="{% static 'scripts/app.js' %}"></script>
 {% endblock %}

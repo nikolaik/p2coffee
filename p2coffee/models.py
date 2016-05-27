@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.db import models
 from django.utils.timesince import timesince
-from django.utils.translation import ugettext_lazy as _, ugettext as __
+from django.utils.translation import ugettext_lazy as _, ugettext
 from django_extensions.db.models import TimeStampedModel
 import uuid
 
@@ -54,10 +54,13 @@ class CoffeePotEvent(TimeStampedModel):
             return dt_natural
 
         # If not now and not in the future
-        if dt_natural != __('now') and __('in') not in dt_natural:
-            dt_natural = '{} {}'.format(__('for'), dt_natural)
+        if dt_natural != ugettext('now') and ugettext('in') not in dt_natural:
+            dt_natural = '{} {}'.format(ugettext('for'), dt_natural)
 
         return dt_natural
+
+    def as_text(self):
+        return self.as_slack_text()
 
     def as_slack_text(self):
         return '{} {}{}'.format(self.__str__(), self._naturaltime_with_for(self.created), self._get_duration())
@@ -68,7 +71,7 @@ class CoffeePotEvent(TimeStampedModel):
         if self.type == self.BREWING_STARTED:
             brew_time = timedelta(minutes=settings.BREWTIME_AVG_MINUTES)
             expected_brewtime = self._naturaltime_with_for(self.created + brew_time)
-            duration = __(' and should be done {}').format(expected_brewtime)
+            duration = ugettext(' and should be done {}').format(expected_brewtime)
 
         elif self.type == self.BREWING_FINISHED:
             events_started = CoffeePotEvent.objects.filter(type=self.BREWING_STARTED)
@@ -76,7 +79,7 @@ class CoffeePotEvent(TimeStampedModel):
 
             if last_started_event:
                 actual_brew_time = timesince(last_started_event.created, self.created)
-                duration = __(', took only {} :-)').format(actual_brew_time)
+                duration = ugettext(', took only {}').format(actual_brew_time)
 
         return duration
 

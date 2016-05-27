@@ -41,6 +41,7 @@ class StatsView(TemplateView):
 
         context.update({
             'last_state': self._get_last_power_state(),
+            'last_brew': self._get_last_coffee_event(),
             'urls': {
                 'stats-events': reverse('stats-events')
             }
@@ -50,6 +51,9 @@ class StatsView(TemplateView):
 
     def _get_last_power_state(self):
         return SensorEvent.objects.filter(name=SensorEvent.NAME_SWITCH).last()
+
+    def _get_last_coffee_event(self):
+        return CoffeePotEvent.objects.last()
 
 
 class StatsEvents(APIView):
