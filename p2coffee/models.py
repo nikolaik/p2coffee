@@ -45,16 +45,29 @@ class CoffeePotEvent(TimeStampedModel):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4)
     type = models.CharField(max_length=254, choices=EVENT_TYPES)
 
+    @staticmethod
+    def _naturaltime_with_for(dt):
+        """ prefixes with 'for' when dt in the past and language is norwegian """
+        dt_natural = naturaltime(dt)
+
+        if settings.LANGUAGE_CODE != 'nb':
+            return dt_natural
+
+        # If not now and not in the future
+        if dt_natural != __('now') and __('in') not in dt_natural:
+            dt_natural = '{} {}'.format(__('for'), dt_natural)
+
+        return dt_natural
+
     def as_slack_text(self):
-        # FIXME: if naturaltime is in the past, grammar issue (missing for)
-        return '{} {}{}'.format(self.__str__(), naturaltime(self.created), self._get_duration())
+        return '{} {}{}'.format(self.__str__(), self._naturaltime_with_for(self.created), self._get_duration())
 
     def _get_duration(self):
         duration = ''
 
         if self.type == self.BREWING_STARTED:
             brew_time = timedelta(minutes=settings.BREWTIME_AVG_MINUTES)
-            expected_brewtime = naturaltime(self.created + brew_time)
+            expected_brewtime = self._naturaltime_with_for(self.created + brew_time)
             duration = __(' and should be done {}').format(expected_brewtime)
 
         elif self.type == self.BREWING_FINISHED:
