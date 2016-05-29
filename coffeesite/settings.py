@@ -126,6 +126,8 @@ HUEY = RedisHuey('coffeesite', result_store=False, **rconn)
 # Slack
 SLACK_WEBHOOK_URL = os.getenv('SLACK_WEBHOOK_URL')
 
+LIFX_TOKEN = ''
+
 # Brewing settings
 BREWTIME_AVG_MINUTES = int(os.getenv('BREWTIME_AVG_MINUTES', '4'))
 
