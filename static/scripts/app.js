@@ -4,14 +4,15 @@ $(function () {
         console.log(eventSeries);
         $('#container').highcharts({
             chart: {
-                type: 'scatter',
+                type: 'column',
                 zoomType: 'xy'
             },
             title: {
                 text: 'Power in watt over time'
             },
             xAxis: {
-                type: 'datetime'
+                type: 'datetime',
+				tickInterval: 3600 * 1000,
             },
             yAxis: {
                 title: {

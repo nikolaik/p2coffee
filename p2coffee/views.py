@@ -1,13 +1,12 @@
 from braces.views import CsrfExemptMixin
+from collections import defaultdict
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.utils.translation import ugettext as _
 from django.views.generic import View, TemplateView
 from itertools import groupby
-
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
 from p2coffee.forms import SensorEventForm, SlackOutgoingForm
 from p2coffee.models import SensorEvent, CoffeePotEvent
 from p2coffee.tasks import on_new_meter
@@ -59,7 +58,39 @@ class StatsView(TemplateView):
 class StatsEvents(APIView):
     """List events grouped by name, in highcharts friendly format."""
     def get(self, request, format=None):
-        return Response(self._get_events())
+        return Response(self._get_events_by_hour())
+
+    def _get_events_by_hour(self):
+        queryset = SensorEvent.objects.filter(name=SensorEvent.NAME_METER_HAS_CHANGED, value__gt=0)
+        queryset = queryset.order_by('created')
+        events = queryset.values('value', 'created')
+
+        # First, split all events into days
+        events_by_date = defaultdict(list)
+        for event in events:
+            key = event['created'].date().isoformat()
+            events_by_date[key].append(event)
+
+        # Format right now:
+        # events_by_date = {"2016-05-01": [event, event, ...], ...}
+        #
+        # Desired format:
+        # event_series = [
+        #   {
+        #     "name":
+        #     "data": [ ["00:00": <value>], ["01:00"], ]
+        #   }
+        # ]
+
+        event_series = []
+        for date, events in events_by_date.items():
+            event_series.append({
+                "name": date,
+                "data": self._events_to_highcharts_format(
+                    events,
+                )
+            })
+        return event_series
 
     def _get_events(self):
         events = SensorEvent.objects.filter(name=SensorEvent.NAME_METER_HAS_CHANGED).values('name', 'value', 'created')
@@ -76,8 +107,13 @@ class StatsEvents(APIView):
 
         return event_groups
 
-    def _events_to_highcharts_format(self, events):
-        return list(map(lambda e: [e['created'].timestamp() * 1000, float(e['value'])], events))
+    def _events_to_highcharts_format(self, events, x_function=None, y_function=None):
+        if x_function is None:
+            x_function = lambda e: e['created'].timestamp() * 1000
+        if y_function is None:
+            y_function = lambda e: float(e['value'])
+
+        return list(map(lambda e: [x_function(e), y_function(e)], events))
 
 
 class SlackOutgoingView(CsrfExemptMixin, View):
