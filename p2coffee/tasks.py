@@ -16,7 +16,10 @@ def on_new_meter(sensor_event):
         return  # Only changes are significant, ignore normal readings
 
     # Get previous event value
-    change_events = SensorEvent.objects.filter(name=SensorEvent.NAME_METER_HAS_CHANGED)
+    change_events = SensorEvent.objects.filter(
+            name=SensorEvent.NAME_METER_HAS_CHANGED,
+            created__lt=sensor_event.created,
+    ).order_by('created')
     previous_value = float(change_events.exclude(uuid=sensor_event.uuid).last().value)
 
     # Compare current with previous and check if thresholds have been crossed
