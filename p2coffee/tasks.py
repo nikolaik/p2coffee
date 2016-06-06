@@ -8,7 +8,7 @@ def on_new_meter(sensor_event):
     assert isinstance(sensor_event, SensorEvent)
     # FIXME values are guesstimates
     threshold_started = 1500
-    threshold_finished = 100
+    threshold_finished = 500
     cpe = None
     current_value = float(sensor_event.value)
 
