@@ -54,7 +54,7 @@ class CoffeePotEvent(TimeStampedModel):
             return dt_natural
 
         # If not now and not in the future
-        if dt_natural != ugettext('now') and ugettext('in') not in dt_natural:
+        if dt_natural != ugettext('now') and ugettext('from') not in dt_natural:
             dt_natural = '{} {}'.format(ugettext('for'), dt_natural)
 
         return dt_natural
