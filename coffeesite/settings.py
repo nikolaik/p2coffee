@@ -125,6 +125,8 @@ HUEY = RedisHuey('coffeesite', result_store=False, **rconn)
 
 # Slack
 SLACK_WEBHOOK_URL = os.getenv('SLACK_WEBHOOK_URL')
+SLACK_API_URL_BASE = 'https://slack.com/api/'
+SLACK_API_TOKEN = os.getenv('SLACK_API_TOKEN')
 
 LIFX_TOKEN = ''
 

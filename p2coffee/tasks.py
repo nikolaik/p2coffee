@@ -1,5 +1,4 @@
 from huey.contrib.djhuey import db_task
-
 from p2coffee import slack
 from p2coffee.models import SensorEvent, CoffeePotEvent
 
@@ -36,3 +35,4 @@ def on_new_meter(sensor_event):
 def send_to_slack(cpe):
     # Notify on Slack
     slack.send_msg(cpe.as_slack_text())
+
