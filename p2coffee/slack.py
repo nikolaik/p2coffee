@@ -12,7 +12,7 @@ def _dispatch(method, **data):
     url_base = settings.SLACK_API_URL_BASE
     params = urllib.parse.urlencode({
         'token': settings.SLACK_API_TOKEN,
-        'name': 'Kaffetrakteren',
+        'username': 'Kaffetrakteren',
         **data
     })
 
@@ -25,20 +25,6 @@ def _dispatch(method, **data):
     error = content.get('error', '')
     logger.debug("Got response: ok=%s%s", str(content['ok']), ', error='+error if error else '')
     return content
-
-
-def send_msg(text, channel=None):
-    url = settings.SLACK_WEBHOOK_URL
-    data = {'text': text}
-    if channel is not None:
-        data['channel'] = channel
-
-    logger.debug("Sending request to slack with data: %s", json.dumps(data))
-
-    if url:
-        response = requests.post(url, json=data)
-        logger.debug("Got response from slack (%d): %s", response.status_code, response.content)
-        return response
 
 
 def channels_list():

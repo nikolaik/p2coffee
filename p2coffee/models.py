@@ -44,6 +44,8 @@ class CoffeePotEvent(TimeStampedModel):
     ]
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4)
     type = models.CharField(max_length=254, choices=EVENT_TYPES)
+    slack_channel = models.CharField(max_length=64, null=True, blank=True)
+    slack_ts = models.CharField(max_length=64, null=True, blank=True)
 
     @staticmethod
     def _naturaltime_with_for(dt):

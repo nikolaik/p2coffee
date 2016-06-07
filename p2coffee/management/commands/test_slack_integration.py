@@ -29,4 +29,3 @@ class Command(BaseCommand):
         delete_response = slack.chat_delete(channel_id, msg_ts)
         print(json.dumps(delete_response, indent=4))
 
-        #slack.update_msg('Hello, Robert', None)
