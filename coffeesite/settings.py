@@ -124,7 +124,9 @@ rconn = {'host': rconn.hostname, 'port': rconn.port, 'password': rconn.password}
 HUEY = RedisHuey('coffeesite', result_store=False, **rconn)
 
 # Slack
-SLACK_WEBHOOK_URL = os.getenv('SLACK_WEBHOOK_URL')
+SLACK_API_URL_BASE = 'https://slack.com/api/'
+SLACK_API_TOKEN = os.getenv('SLACK_API_TOKEN')
+SLACK_CHANNEL = os.getenv('SLACK_CHANNEL', '#im-a-coffeepot')
 
 LIFX_TOKEN = ''
 

@@ -1,7 +1,14 @@
-from huey.contrib.djhuey import db_task
-
+import logging
+from datetime import datetime, timedelta
+from django.conf import settings
+from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
+from huey.contrib.djhuey import db_task, task
 from p2coffee import slack
 from p2coffee.models import SensorEvent, CoffeePotEvent
+
+
+logger = logging.getLogger(__name__)
 
 
 def on_new_meter(sensor_event):
@@ -25,14 +32,80 @@ def on_new_meter(sensor_event):
     # Compare current with previous and check if thresholds have been crossed
     if current_value >= threshold_started > previous_value:
         cpe = CoffeePotEvent.objects.create(type=CoffeePotEvent.BREWING_STARTED)
+        start_brewing(cpe)
     elif current_value <= threshold_finished < previous_value:
         cpe = CoffeePotEvent.objects.create(type=CoffeePotEvent.BREWING_FINISHED)
 
-    if cpe is not None:
-        send_to_slack(cpe)
+
+@task()
+def start_brewing(event):
+    logger.debug('Starting brewing')
+    channel = settings.SLACK_CHANNEL
+    response = slack.chat_post_message(channel, __create_message_prefix(event))
+
+    event.slack_channel = response['channel']
+    event.slack_ts = response['ts']
+    event.save()
+
+    update_progress.schedule(args=(event.pk,), delay=3)
 
 
 @db_task()
-def send_to_slack(cpe):
-    # Notify on Slack
-    slack.send_msg(cpe.as_slack_text())
+def update_progress(event_pk):
+    logger.debug('Updating progress')
+    try:
+        event = CoffeePotEvent.objects.get(pk=event_pk)
+    except CoffeePotEvent.DoesNotExist:
+        logger.error("Critical error! CoffeePotEvent %d doesn't exist.", event_pk)
+        return
+
+    message = __create_message_prefix(event)
+    newer_events = CoffeePotEvent.objects.filter(created__gt=event.created).order_by('created')
+    if len(newer_events) == 0:
+        duration = (timezone.now() - event.created).seconds
+        avg_brewtime = settings.BREWTIME_AVG_MINUTES * 60
+
+        if duration > avg_brewtime:
+            message = "{0}{1}\n{2}".format(
+                message,
+                _("...looks like I'm a bit slow today..."),
+                __create_progress_bar(100),
+            )
+        else:
+            progress = int(100 * (duration / avg_brewtime))
+            message = "{0}\n{1}".format(
+                message,
+                __create_progress_bar(progress),
+            )
+
+        slack.chat_update(event.slack_channel, event.slack_ts, message)
+        update_progress.schedule(args=(event_pk,), delay=3)
+        return
+
+    for new_event in newer_events:
+        if new_event.type == CoffeePotEvent.BREWING_FINISHED:
+            t = new_event.created.strftime('%H:%M:%S')
+            message = "{0}{1}".format(
+                message,
+                _(" and finished at {}!".format(t)),
+            )
+            slack.chat_update(event.slack_channel, event.slack_ts, message)
+            return
+
+    # Multiple brewings started without finishing. This shouldn't happen.
+    raise RuntimeError('Invalid coffee pot state.')
+
+
+def __create_message_prefix(event):
+    t = event.created.strftime('%H:%M:%S')
+    return _('I started brewing at {}').format(t)
+
+
+def __create_progress_bar(percent):
+    assert 0 <= percent <= 100
+
+    filled_chars = ''.join(['#'] * percent)
+    unfilled_chars = ''.join(['-'] * (100 - percent))
+
+    return '`[{}{}] {}%`'.format(filled_chars, unfilled_chars, percent)
+
