@@ -1,13 +1,13 @@
-Django==1.9.6
-django-braces==1.8.1
+Django==1.9.7
+django-braces==1.9.0
 django-extensions==1.6.7
 djangorestframework==3.3.3
 dj-database-url==0.4.1
 gevent==1.1.1
 greenlet==0.4.9
-gunicorn==19.5.0
+gunicorn==19.6.0
 huey==1.1.2
 psycopg2==2.6.1
 redis==2.10.5
 requests==2.10.0
-whitenoise==3.1
+whitenoise==3.2
