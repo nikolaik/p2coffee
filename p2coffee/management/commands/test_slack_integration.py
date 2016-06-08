@@ -5,11 +5,15 @@ from p2coffee import slack
 
 
 class Command(BaseCommand):
-    def handle(self, **kwargs):
+    def add_arguments(self, parser):
+        parser.add_argument('channel_name', nargs='?', default='im-a-coffeepot')
+
+    def handle(self, *args, **options):
+        test_channel = options.get('channel_name')
         channels = slack.channels_list()['channels']
 
         for channel in channels:
-            if 'im-a-coffeepot' == channel['name']:
+            if channel['name'] == test_channel:
                 channel_id = channel['id']
                 break
         else:  # no break
