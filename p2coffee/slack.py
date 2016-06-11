@@ -12,7 +12,8 @@ def _dispatch(method, **data):
     url_base = settings.SLACK_API_URL_BASE
     params = urllib.parse.urlencode({
         'token': settings.SLACK_API_TOKEN,
-        'username': 'Kaffetrakteren',
+        'username': settings.SLACK_BOT_USERNAME,
+        'icon_url': settings.SLACK_BOT_ICON_URL,
         **data
     })
 
@@ -35,6 +36,10 @@ def channels_info(channel):
     return _dispatch('channels.info', channel=channel)
 
 
+def channels_join(channel):
+    return _dispatch('channels.join', channel=channel)
+
+
 def chat_post_message(channel, text):
     data = {
         'channel': channel,
@@ -42,6 +47,7 @@ def chat_post_message(channel, text):
     }
 
     return _dispatch('chat.postMessage', **data)
+
 
 def chat_update(channel, timestamp, text):
     data = {
@@ -51,6 +57,7 @@ def chat_update(channel, timestamp, text):
     }
 
     return _dispatch('chat.update', **data)
+
 
 def chat_delete(channel, timestamp):
     data = {

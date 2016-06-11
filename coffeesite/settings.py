@@ -42,6 +42,7 @@ INSTALLED_APPS += [
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -127,6 +128,8 @@ HUEY = RedisHuey('coffeesite', result_store=False, **rconn)
 SLACK_API_URL_BASE = 'https://slack.com/api/'
 SLACK_API_TOKEN = os.getenv('SLACK_API_TOKEN')
 SLACK_CHANNEL = os.getenv('SLACK_CHANNEL', '#im-a-coffeepot')
+SLACK_BOT_USERNAME = os.getenv('SLACK_BOT_USERNAME', 'Kaffetrakteren')
+SLACK_BOT_ICON_URL = os.getenv('SLACK_BOT_ICON_URL', 'https://p2coffee.herokuapp.com/static/images/icon.jpg')
 
 LIFX_TOKEN = ''
 
