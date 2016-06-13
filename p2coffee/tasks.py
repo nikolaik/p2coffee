@@ -1,12 +1,11 @@
 import logging
-from datetime import datetime, timedelta
 from django.conf import settings
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from huey.contrib.djhuey import db_task, task
 from p2coffee import slack
 from p2coffee.models import SensorEvent, CoffeePotEvent
-
+from p2coffee.utils import format_local_timestamp
 
 logger = logging.getLogger(__name__)
 
@@ -84,7 +83,7 @@ def update_progress(event_pk):
 
     for new_event in newer_events:
         if new_event.type == CoffeePotEvent.BREWING_FINISHED:
-            t = new_event.created.strftime('%H:%M:%S')
+            t = format_local_timestamp(new_event.created, '%H:%M:%S')
             message = "{0}{1}".format(
                 message,
                 _(" and finished at {}!".format(t)),
@@ -97,7 +96,7 @@ def update_progress(event_pk):
 
 
 def __create_message_prefix(event):
-    t = event.created.strftime('%H:%M:%S')
+    t = format_local_timestamp(event.created, '%H:%M:%S')
     return _('I started brewing at {}').format(t)
 
 
