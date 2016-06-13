@@ -103,9 +103,14 @@ def __create_message_prefix(event):
 
 def __create_progress_bar(percent):
     assert 0 <= percent <= 100
+    symbol_filled = '☕'
+    symbol_unfilled = '_'
+    max_width = 32
 
-    filled_chars = ''.join(['#'] * percent)
-    unfilled_chars = ''.join(['-'] * (100 - percent))
+    normalized = int((percent / 100) * max_width)
+
+    filled_chars = ''.join([symbol_filled] * normalized)
+    unfilled_chars = ''.join([symbol_unfilled] * (max_width - normalized))
 
     return '`[{}{}] {}%`'.format(filled_chars, unfilled_chars, percent)
 
