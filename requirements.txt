@@ -4,7 +4,7 @@ django-extensions==1.6.7
 djangorestframework==3.3.3
 dj-database-url==0.4.1
 gevent==1.1.1
-greenlet==0.4.9
+greenlet==0.4.10
 gunicorn==19.6.0
 huey==1.1.2
 psycopg2==2.6.1
