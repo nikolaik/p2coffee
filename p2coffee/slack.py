@@ -23,8 +23,37 @@ def _dispatch(method, **data):
     response = requests.post(url)
     content = json.loads(response.content.decode())
 
-    error = content.get('error', '')
-    logger.debug("Got response: ok=%s%s", str(content['ok']), ', error='+error if error else '')
+    error = content.get('error')
+    if error:
+        logger.error("Got response: ok=%s, %s", str(content['ok']), 'error='+error)
+    else:
+        logger.debug("Got response: ok=%s", str(content['ok']))
+    return content
+
+
+def _upload(method, f, channels=None):
+    url_base = settings.SLACK_API_URL_BASE
+    params = {
+        'token': settings.SLACK_API_TOKEN,
+        'username': settings.SLACK_BOT_USERNAME,
+        'icon_url': settings.SLACK_BOT_ICON_URL,
+    }
+    if channels:
+        params['channels'] = ",".join(channels)
+
+    params = urllib.parse.urlencode(params)
+
+    url = url_base + '{}?{}'.format(method, params)
+    logger.debug("Uploading file to slack.")
+    
+    response = requests.post(url, files={'file': ('current.jpg', f)})
+    content = json.loads(response.content.decode())
+
+    error = content.get('error')
+    if error:
+        logger.error("Got response: ok=%s, %s", str(content['ok']), 'error='+error)
+    else:
+        logger.debug("Got response: ok=%s", str(content['ok']))
     return content
 
 
@@ -40,11 +69,16 @@ def channels_join(channel):
     return _dispatch('channels.join', channel=channel)
 
 
-def chat_post_message(channel, text):
+def chat_post_message(channel, text=None, attachments=None):
     data = {
         'channel': channel,
-        'text': text,
     }
+
+    if text is not None:
+        data['text'] = text
+
+    if attachments is not None:
+        data['attachments'] = attachments
 
     return _dispatch('chat.postMessage', **data)
 
@@ -66,4 +100,8 @@ def chat_delete(channel, timestamp):
     }
 
     return _dispatch('chat.delete', **data)
+
+
+def files_upload(f, channels=None):
+    return _upload('files.upload', f, channels=channels)
 

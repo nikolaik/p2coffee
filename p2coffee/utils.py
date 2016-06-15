@@ -1,4 +1,11 @@
+import logging
+import io
+import requests
+from django.conf import settings
 from django.utils.timezone import is_naive, get_current_timezone_name, pytz, is_aware, localtime
+
+
+logger = logging.getLogger(__name__)
 
 
 def format_local_timestamp(dt, dt_format='%Y-%m-%d %H:%M'):
@@ -13,3 +20,17 @@ def format_local_timestamp(dt, dt_format='%Y-%m-%d %H:%M'):
         dt = localtime(dt)
 
     return dt.strftime(dt_format)
+
+
+def coffee_image():
+    url = settings.COFFEE_CAMERA_URL
+    auth = (settings.COFFEE_CAMERA_USER, settings.COFFEE_CAMERA_PASS)
+
+    response = requests.get(url, auth=auth)
+    if response.status_code == 200:
+        logger.debug("Got image with %d bytes", len(response.content))
+        return io.BytesIO(response.content)
+
+    logger.error("Couldn't get camera image: %s", str(response.content))
+    return None
+
