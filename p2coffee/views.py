@@ -1,4 +1,6 @@
+from . import slack
 from braces.views import CsrfExemptMixin
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.utils.translation import ugettext as _
@@ -11,6 +13,7 @@ from rest_framework.views import APIView
 from p2coffee.forms import SensorEventForm, SlackOutgoingForm
 from p2coffee.models import SensorEvent, CoffeePotEvent
 from p2coffee.tasks import on_new_meter
+from p2coffee.utils import coffee_image
 
 
 class CreateSensorEventView(View):
@@ -89,10 +92,31 @@ class SlackOutgoingView(CsrfExemptMixin, View):
 
         user_name = form.cleaned_data['user_name']
 
-        # TODO: check form.cleaned_data['text']
         last_event = CoffeePotEvent.objects.last()
         brewing_status = _('I\'m a coffee pot!')
         if last_event:
             brewing_status = last_event.as_slack_text()
 
-        return JsonResponse({'text': _('Hi {}, {}').format(user_name, brewing_status)})
+        text = _('Hi {}, {}').format(user_name, brewing_status)
+
+        image_response = self._upload_current_image(text=text, channels=[settings.SLACK_CHANNEL])
+        if not image_response:
+            # If uploading the image to Slack doesn't succeed, try to post a normal message
+            data = {
+                'text': text,
+            }
+            slack.chat_post_message(channel=settings.SLACK_CHANNEL, **data)
+
+        return JsonResponse({})
+
+    def _upload_current_image(self, text=None, channels=None):
+        image = coffee_image()
+        if image is None:
+            return None
+
+        response = slack.files_upload(image, initial_comment=text, channels=channels)
+        if not response['ok']:
+            return None
+
+        return response
+
