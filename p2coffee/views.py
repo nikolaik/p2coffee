@@ -99,8 +99,9 @@ class SlackOutgoingView(CsrfExemptMixin, View):
 
         text = _('Hi {}, {}').format(user_name, brewing_status)
 
-        image_url = self._upload_current_image(channels=[settings.SLACK_CHANNEL])
-        if not image_url:
+        image_response = self._upload_current_image(text=text, channels=[settings.SLACK_CHANNEL])
+        if not image_response:
+            # If uploading the image to Slack doesn't succeed, try to post a normal message
             data = {
                 'text': text,
             }
@@ -108,14 +109,14 @@ class SlackOutgoingView(CsrfExemptMixin, View):
 
         return JsonResponse({})
 
-    def _upload_current_image(self, channels=None):
+    def _upload_current_image(self, text=None, channels=None):
         image = coffee_image()
         if image is None:
             return None
 
-        response = slack.files_upload(image, channels)
+        response = slack.files_upload(image, initial_comment=text, channels=channels)
         if not response['ok']:
             return None
 
-        return response['file']['url_private']
+        return response
 

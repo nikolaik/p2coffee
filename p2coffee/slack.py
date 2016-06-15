@@ -31,21 +31,26 @@ def _dispatch(method, **data):
     return content
 
 
-def _upload(method, f, channels=None):
+def _upload(method, f, channels=None, **data):
     url_base = settings.SLACK_API_URL_BASE
     params = {
         'token': settings.SLACK_API_TOKEN,
         'username': settings.SLACK_BOT_USERNAME,
         'icon_url': settings.SLACK_BOT_ICON_URL,
     }
+
     if channels:
         params['channels'] = ",".join(channels)
+
+    for k, v in data.items():
+        if k is not None and v is not None:
+            params[k] = v
 
     params = urllib.parse.urlencode(params)
 
     url = url_base + '{}?{}'.format(method, params)
     logger.debug("Uploading file to slack.")
-    
+
     response = requests.post(url, files={'file': ('current.jpg', f)})
     content = json.loads(response.content.decode())
 
@@ -102,6 +107,8 @@ def chat_delete(channel, timestamp):
     return _dispatch('chat.delete', **data)
 
 
-def files_upload(f, channels=None):
-    return _upload('files.upload', f, channels=channels)
+def files_upload(f, filename=None, filetype=None, title=None, initial_comment=None, channels=None):
+    return _upload('files.upload', f,
+                   filename=filename, filetype=filetype, title=title,
+                   initial_comment=info, channels=channels)
 
