@@ -110,5 +110,5 @@ def chat_delete(channel, timestamp):
 def files_upload(f, filename=None, filetype=None, title=None, initial_comment=None, channels=None):
     return _upload('files.upload', f,
                    filename=filename, filetype=filetype, title=title,
-                   initial_comment=info, channels=channels)
+                   initial_comment=initial_comment, channels=channels)
 
