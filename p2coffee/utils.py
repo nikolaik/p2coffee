@@ -3,7 +3,7 @@ import io
 import requests
 from django.conf import settings
 from django.utils.timezone import is_naive, get_current_timezone_name, pytz, is_aware, localtime
-
+from requests.exceptions import ConnectionError
 
 logger = logging.getLogger(__name__)
 
@@ -26,11 +26,15 @@ def coffee_image():
     url = settings.COFFEE_CAMERA_URL
     auth = (settings.COFFEE_CAMERA_USER, settings.COFFEE_CAMERA_PASS)
 
-    response = requests.get(url, auth=auth)
-    if response.status_code == 200:
-        logger.debug("Got image with %d bytes", len(response.content))
-        return io.BytesIO(response.content)
+    try:
+        response = requests.get(url, auth=auth)
+        if response.status_code == 200:
+            logger.debug("Got image with %d bytes", len(response.content))
+            return io.BytesIO(response.content)
 
-    logger.error("Couldn't get camera image: %s", str(response.content))
+        logger.error("Couldn't get camera image: %s", str(response.content))
+    except ConnectionError as e:
+        logger.error("Couldn't get camera image: %s", str(e))
+
     return None
 
