@@ -25,9 +25,9 @@ def _dispatch(method, **data):
 
     error = content.get('error')
     if error:
-        logger.error("Got response: ok=%s, %s", str(content['ok']), 'error='+error)
+        logger.error("Method %s, got response: ok=%s, %s", method, str(content['ok']), 'error='+error)
     else:
-        logger.debug("Got response: ok=%s", str(content['ok']))
+        logger.debug("Method %s, got response: ok=%s", method, str(content['ok']))
     return content
 
 
@@ -56,9 +56,9 @@ def _upload(method, f, channels=None, **data):
 
     error = content.get('error')
     if error:
-        logger.error("Got response: ok=%s, %s", str(content['ok']), 'error='+error)
+        logger.error("Method %s, Got response: ok=%s, %s", method, str(content['ok']), 'error='+error)
     else:
-        logger.debug("Got response: ok=%s", str(content['ok']))
+        logger.debug("Method %s, Got response: ok=%s", method, str(content['ok']))
     return content
 
 
