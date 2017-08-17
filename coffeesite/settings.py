@@ -129,13 +129,13 @@ SLACK_API_URL_BASE = 'https://slack.com/api/'
 SLACK_API_TOKEN = os.getenv('SLACK_API_TOKEN')
 SLACK_CHANNEL = os.getenv('SLACK_CHANNEL', '#im-a-coffeepot')
 SLACK_BOT_USERNAME = os.getenv('SLACK_BOT_USERNAME', 'Kaffetrakteren')
-SLACK_BOT_ICON_URL = os.getenv('SLACK_BOT_ICON_URL', 'https://p2coffee.herokuapp.com/static/images/icon.jpg')
+SLACK_BOT_ICON_URL = os.getenv('SLACK_BOT_ICON_URL', 'https://p2coffee.comicsans.no/static/images/icon.jpg')
 
 # Lifx
 LIFX_TOKEN = ''
 
 # Coffee camera settings
-COFFEE_CAMERA_URL = os.getenv('COFFEE_CAMERA_URL', 'http://195.159.182.134:8080/cam/1')
+COFFEE_CAMERA_URL = os.getenv('COFFEE_CAMERA_URL', 'http://127.0.0.1:8001/cam/1')
 COFFEE_CAMERA_USER = os.getenv('COFFEE_CAMERA_USER')
 COFFEE_CAMERA_PASS = os.getenv('COFFEE_CAMERA_PASS')
 
