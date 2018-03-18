@@ -1,4 +1,4 @@
-Django==1.11.4
+Django==1.11.11
 django-braces==1.11.0
 django-extensions==1.8.1
 djangorestframework==3.6.3
