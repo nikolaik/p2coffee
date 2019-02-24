@@ -1,0 +1,24 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+Django = "==1.11.*"
+django-braces = "==1.*"
+django-extensions = "==1.*"
+djangorestframework = "==3.6.*"
+dj-database-url = "==0.*"
+gevent = "==1.*"
+greenlet = "==0.*"
+gunicorn = "==19.*"
+huey = "==1.*"
+psycopg2 = "==2.*"
+redis = "==3.*"
+requests = ">=2.20.0"
+whitenoise = "==4.*"
+
+[requires]
+python_version = "3.6"
